@@ -2,6 +2,7 @@ package com.javiersillo.taskmanager.controller;
 
 import com.javiersillo.taskmanager.model.Task;
 import com.javiersillo.taskmanager.service.TaskService;
+import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -27,6 +28,7 @@ public class TaskController {
     }
 
     @PostMapping
+    @ResponseStatus(HttpStatus.CREATED)
     public Task createTask(@RequestBody Task task) {
         return taskService.createTask(task);
     }
@@ -37,6 +39,7 @@ public class TaskController {
     }
 
     @DeleteMapping("/{id}")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
     public void deleteTaskById(@PathVariable Long id) {
         taskService.deleteTaskById(id);
     }
