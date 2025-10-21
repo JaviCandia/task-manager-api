@@ -1,0 +1,19 @@
+name: OIDC Token Debugger
+
+on:
+  workflow_dispatch:
+
+permissions:
+  id-token: write
+
+jobs:
+  debug-token:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Get OIDC Token and Decode 'sub' claim
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const token = await core.getIDToken();
+            const payload = JSON.parse(Buffer.from(token.split('.')[1], 'base64').toString());
+            console.log("El valor del 'sub' claim es:", payload.sub);
