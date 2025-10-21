@@ -14,20 +14,12 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v4
 
-      - name: Debug OIDC claims
+      - name: Debug expected SUB
         run: |
-          echo "Getting OIDC token…"
-          tok_json=$(curl -sSL -H "Authorization: bearer $ACTIONS_ID_TOKEN_REQUEST_TOKEN" \
-            "${ACTIONS_ID_TOKEN_REQUEST_URL}&audience=sts.amazonaws.com")
-          jwt=$(python3 - <<'PY'
-          import sys, json; print(json.load(sys.stdin)["value"])
-          PY
-          <<< "$tok_json")
-          python3 - <<'PY' <<< "$jwt"
-          import sys,base64,json
-          jwt=sys.stdin.read().strip().split('.')[1]+'=='
-          print(json.dumps(json.loads(base64.urlsafe_b64decode(jwt)), indent=2))
-          PY
+          echo "GITHUB_REPOSITORY=$GITHUB_REPOSITORY"
+          echo "GITHUB_REF=$GITHUB_REF"
+          repo_lc="${GITHUB_REPOSITORY,,}"
+          echo "SUB should be: repo:${repo_lc}:ref:${GITHUB_REF}"
 
       - name: Configure AWS credentials
         uses: aws-actions/configure-aws-credentials@v4
